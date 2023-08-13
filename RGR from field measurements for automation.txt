@@ -1,0 +1,2746 @@
+
+
+    import pandas as pd
+    import numpy as np
+    #pd.reset_option('display.max_rows')
+
+Mandaring growth rate
+
+    #upload data
+    df=pd.read_csv('mandarin_growth_all_years.csv')
+    df
+
+    /var/folders/dt/92d_4ycx4kl7ds25s_xk72n80000gn/T/ipykernel_67821/3882479853.py:2: DtypeWarning: Columns (8,9,11,27,29) have mixed types. Specify dtype option on import or set low_memory=False.
+      df=pd.read_csv('mandarin_growth_all_years.csv')
+
+           cultivar variety     block  tree_number  fruit_number fruit_diameter  \
+    0      Mandarin    Orri      east          1.0           1.0             23   
+    1      Mandarin    Orri      east          1.0           2.0           20.6   
+    2      Mandarin    Orri      east          1.0           3.0           17.2   
+    3      Mandarin    Orri      east          1.0           4.0           22.9   
+    4      Mandarin    Orri      east          1.0           5.0           25.6   
+    ...         ...     ...       ...          ...           ...            ...   
+    27566  Mandarin    Orri  rendzina          5.0           6.0          55.92   
+    27567  Mandarin    Orri  rendzina          5.0           7.0          56.19   
+    27568  Mandarin    Orri  rendzina          5.0           8.0            NaN   
+    27569  Mandarin    Orri  rendzina          5.0           9.0          66.33   
+    27570  Mandarin    Orri  rendzina          5.0          10.0          58.35   
+
+           Av_fruit_diameter date_of_measure relative_mm_increment  \
+    0                    NaN      2021-07-26                   NaN   
+    1                    NaN      2021-07-26                   NaN   
+    2                    NaN      2021-07-26                   NaN   
+    3                    NaN      2021-07-26                   NaN   
+    4                    NaN      2021-07-26                   NaN   
+    ...                  ...             ...                   ...   
+    27566                NaN      2022-12-27                   6.2   
+    27567                NaN      2022-12-27                  7.56   
+    27568                NaN      2022-12-27                   NaN   
+    27569                NaN      2022-12-27                  7.54   
+    27570                NaN      2022-12-27                  5.92   
+
+          absolute_mm_increment  ...  accumulates_gdd_13 relative_ehu_27_35  \
+    0                       NaN  ...                 NaN                NaN   
+    1                       NaN  ...                 NaN                NaN   
+    2                       NaN  ...                 NaN                NaN   
+    3                       NaN  ...                 NaN                NaN   
+    4                       NaN  ...                 NaN                NaN   
+    ...                     ...  ...                 ...                ...   
+    27566                 39.57  ...                 NaN                NaN   
+    27567                 37.61  ...                 NaN                NaN   
+    27568                   NaN  ...                 NaN                NaN   
+    27569                 40.18  ...                 NaN                NaN   
+    27570                 33.85  ...                 NaN                NaN   
+
+          monthly_ehu_27_35 relative_precipitation monthly_precipitation  \
+    0                   NaN                    NaN                   NaN   
+    1                   NaN                    NaN                   NaN   
+    2                   NaN                    NaN                   NaN   
+    3                   NaN                    NaN                   NaN   
+    4                   NaN                    NaN                   NaN   
+    ...                 ...                    ...                   ...   
+    27566               NaN                    NaN                   NaN   
+    27567               NaN                    NaN                   NaN   
+    27568               NaN                    NaN                   NaN   
+    27569               NaN                    NaN                   NaN   
+    27570               NaN                    NaN                   NaN   
+
+          relative_humidity  total_relative_radiation(Mj/m2)  \
+    0                   NaN                              NaN   
+    1                   NaN                              NaN   
+    2                   NaN                              NaN   
+    3                   NaN                              NaN   
+    4                   NaN                              NaN   
+    ...                 ...                              ...   
+    27566               NaN                              NaN   
+    27567               NaN                              NaN   
+    27568               NaN                              NaN   
+    27569               NaN                              NaN   
+    27570               NaN                              NaN   
+
+           total_radiation_per_month  peel_color  coordinates  
+    0                            NaN         NaN          NaN  
+    1                            NaN         NaN          NaN  
+    2                            NaN         NaN          NaN  
+    3                            NaN         NaN          NaN  
+    4                            NaN         NaN          NaN  
+    ...                          ...         ...          ...  
+    27566                        NaN         NaN          NaN  
+    27567                        NaN         NaN          NaN  
+    27568                        NaN         NaN          NaN  
+    27569                        NaN         NaN          NaN  
+    27570                        NaN         NaN          NaN  
+
+    [27571 rows x 61 columns]
+
+    #check types of variable
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 27571 entries, 0 to 27570
+    Data columns (total 61 columns):
+     #   Column                           Non-Null Count  Dtype  
+    ---  ------                           --------------  -----  
+     0   cultivar                         27571 non-null  object 
+     1   variety                          27571 non-null  object 
+     2   block                            27571 non-null  object 
+     3   tree_number                      21367 non-null  float64
+     4   fruit_number                     21367 non-null  float64
+     5   fruit_diameter                   26542 non-null  object 
+     6   Av_fruit_diameter                14464 non-null  float64
+     7   date_of_measure                  27571 non-null  object 
+     8   relative_mm_increment            24036 non-null  object 
+     9   absolute_mm_increment            24150 non-null  object 
+     10  days_increment                   26835 non-null  float64
+     11  relative_fruit_growth_rate       24013 non-null  object 
+     12  rootstock                        23060 non-null  object 
+     13  soil_type                        26438 non-null  object 
+     14  country                          27571 non-null  object 
+     15  location                         27571 non-null  object 
+     16  crop_load                        13142 non-null  float64
+     17  planting_distance_between_rows   23060 non-null  float64
+     18  planting_distance_within_rows    23060 non-null  float64
+     19  tree_height                      23060 non-null  float64
+     20  tree_length                      14685 non-null  float64
+     21  tree_width                       14685 non-null  float64
+     22  tree_area                        14685 non-null  float64
+     23  normalized_crop_load             3657 non-null   float64
+     24  training_system                  15956 non-null  object 
+     25  row_direction                    24331 non-null  object 
+     26  tree_age                         21163 non-null  float64
+     27  fertilization_type               1400 non-null   object 
+     28  fertilization_quantity           1400 non-null   float64
+     29  irrigation_regime                1400 non-null   object 
+     30  leaf_area_index                  0 non-null      float64
+     31  ndvi                             0 non-null      float64
+     32  humidity                         0 non-null      float64
+     33  water_potential                  0 non-null      float64
+     34  sap_flow                         0 non-null      float64
+     35  hormone_application_type         0 non-null      float64
+     36  hormone_application_quantity     0 non-null      float64
+     37  spray_type                       0 non-null      float64
+     38  spray_quantity                   0 non-null      float64
+     39  orchard_area                     0 non-null      float64
+     40  estimated_date_of_full_bloom     0 non-null      float64
+     41  pruning_type                     0 non-null      float64
+     42  gridling_number                  0 non-null      float64
+     43  relative_heat_sum                0 non-null      float64
+     44  heat_sum_units_march_june        0 non-null      float64
+     45  heat_sum_units_per_month         0 non-null      float64
+     46  total_heat_sum_units             0 non-null      float64
+     47  relative_av_temp                 0 non-null      float64
+     48  av_monthly_temp                  0 non-null      float64
+     49  relative_gdd_13                  0 non-null      float64
+     50  monthly_gdd_13_sum               0 non-null      float64
+     51  accumulates_gdd_13               0 non-null      float64
+     52  relative_ehu_27_35               0 non-null      float64
+     53  monthly_ehu_27_35                0 non-null      float64
+     54  relative_precipitation           0 non-null      float64
+     55  monthly_precipitation            0 non-null      float64
+     56  relative_humidity                0 non-null      float64
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64
+     58  total_radiation_per_month        0 non-null      float64
+     59  peel_color                       0 non-null      float64
+     60  coordinates                      8925 non-null   object 
+    dtypes: float64(44), object(17)
+    memory usage: 12.8+ MB
+    None
+
+    #need to chage data types in some of the variables to float
+    var_to_float= ['fruit_diameter','relative_mm_increment','absolute_mm_increment','relative_fruit_growth_rate',
+                   'irrigation_regime']
+    for i in var_to_float:
+        df[i] = pd.to_numeric(df[i], errors='coerce')
+    df['date_of_measure'] = pd.to_datetime(df['date_of_measure'])
+    df['estimated_date_of_full_bloom'] = pd.to_datetime(df['estimated_date_of_full_bloom'])
+    var_to_object= ['hormone_application_type','spray_type','pruning_type','peel_color']
+    for j in var_to_object:
+        df[j]=df[j].astype(str)
+
+    #check the changes in the variables data type
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 27571 entries, 0 to 27570
+    Data columns (total 61 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         27571 non-null  object        
+     1   variety                          27571 non-null  object        
+     2   block                            27571 non-null  object        
+     3   tree_number                      21367 non-null  float64       
+     4   fruit_number                     21367 non-null  float64       
+     5   fruit_diameter                   26523 non-null  float64       
+     6   Av_fruit_diameter                14464 non-null  float64       
+     7   date_of_measure                  27571 non-null  datetime64[ns]
+     8   relative_mm_increment            24032 non-null  float64       
+     9   absolute_mm_increment            24148 non-null  float64       
+     10  days_increment                   26835 non-null  float64       
+     11  relative_fruit_growth_rate       24006 non-null  float64       
+     12  rootstock                        23060 non-null  object        
+     13  soil_type                        26438 non-null  object        
+     14  country                          27571 non-null  object        
+     15  location                         27571 non-null  object        
+     16  crop_load                        13142 non-null  float64       
+     17  planting_distance_between_rows   23060 non-null  float64       
+     18  planting_distance_within_rows    23060 non-null  float64       
+     19  tree_height                      23060 non-null  float64       
+     20  tree_length                      14685 non-null  float64       
+     21  tree_width                       14685 non-null  float64       
+     22  tree_area                        14685 non-null  float64       
+     23  normalized_crop_load             3657 non-null   float64       
+     24  training_system                  15956 non-null  object        
+     25  row_direction                    24331 non-null  object        
+     26  tree_age                         21163 non-null  float64       
+     27  fertilization_type               1400 non-null   object        
+     28  fertilization_quantity           1400 non-null   float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         27571 non-null  object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       27571 non-null  object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     27571 non-null  object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       27571 non-null  object        
+     60  coordinates                      8925 non-null   object        
+    dtypes: datetime64[ns](2), float64(44), object(15)
+    memory usage: 12.8+ MB
+    None
+
+    #create new column of date of year in date time format and extract the date
+    df['date_of_year'] = pd.to_datetime(df['date_of_measure'])
+    df['date_of_year'] = df['date_of_year'].dt.dayofyear
+    df
+
+           cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0      Mandarin    Orri      east          1.0           1.0           23.00   
+    1      Mandarin    Orri      east          1.0           2.0           20.60   
+    2      Mandarin    Orri      east          1.0           3.0           17.20   
+    3      Mandarin    Orri      east          1.0           4.0           22.90   
+    4      Mandarin    Orri      east          1.0           5.0           25.60   
+    ...         ...     ...       ...          ...           ...             ...   
+    27566  Mandarin    Orri  rendzina          5.0           6.0           55.92   
+    27567  Mandarin    Orri  rendzina          5.0           7.0           56.19   
+    27568  Mandarin    Orri  rendzina          5.0           8.0             NaN   
+    27569  Mandarin    Orri  rendzina          5.0           9.0           66.33   
+    27570  Mandarin    Orri  rendzina          5.0          10.0           58.35   
+
+           Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0                    NaN      2021-07-26                    NaN   
+    1                    NaN      2021-07-26                    NaN   
+    2                    NaN      2021-07-26                    NaN   
+    3                    NaN      2021-07-26                    NaN   
+    4                    NaN      2021-07-26                    NaN   
+    ...                  ...             ...                    ...   
+    27566                NaN      2022-12-27                   6.20   
+    27567                NaN      2022-12-27                   7.56   
+    27568                NaN      2022-12-27                    NaN   
+    27569                NaN      2022-12-27                   7.54   
+    27570                NaN      2022-12-27                   5.92   
+
+           absolute_mm_increment  ...  relative_ehu_27_35  monthly_ehu_27_35  \
+    0                        NaN  ...                 NaN                NaN   
+    1                        NaN  ...                 NaN                NaN   
+    2                        NaN  ...                 NaN                NaN   
+    3                        NaN  ...                 NaN                NaN   
+    4                        NaN  ...                 NaN                NaN   
+    ...                      ...  ...                 ...                ...   
+    27566                  39.57  ...                 NaN                NaN   
+    27567                  37.61  ...                 NaN                NaN   
+    27568                    NaN  ...                 NaN                NaN   
+    27569                  40.18  ...                 NaN                NaN   
+    27570                  33.85  ...                 NaN                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    27566                    NaN                   NaN               NaN   
+    27567                    NaN                   NaN               NaN   
+    27568                    NaN                   NaN               NaN   
+    27569                    NaN                   NaN               NaN   
+    27570                    NaN                   NaN               NaN   
+
+          total_relative_radiation(Mj/m2)  total_radiation_per_month  peel_color  \
+    0                                 NaN                        NaN         nan   
+    1                                 NaN                        NaN         nan   
+    2                                 NaN                        NaN         nan   
+    3                                 NaN                        NaN         nan   
+    4                                 NaN                        NaN         nan   
+    ...                               ...                        ...         ...   
+    27566                             NaN                        NaN         nan   
+    27567                             NaN                        NaN         nan   
+    27568                             NaN                        NaN         nan   
+    27569                             NaN                        NaN         nan   
+    27570                             NaN                        NaN         nan   
+
+           coordinates  date_of_year  
+    0              NaN           207  
+    1              NaN           207  
+    2              NaN           207  
+    3              NaN           207  
+    4              NaN           207  
+    ...            ...           ...  
+    27566          NaN           361  
+    27567          NaN           361  
+    27568          NaN           361  
+    27569          NaN           361  
+    27570          NaN           361  
+
+    [27571 rows x 62 columns]
+
+    #replace negative value in 'relative_mm_increment' column and in 'relative_fruit_growth_rate' column to NAN
+    df['relative_mm_increment'] = df['relative_mm_increment'].where(df['relative_mm_increment'] >= 0, np.nan)
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].where(df['relative_fruit_growth_rate'] >= 0, np.nan)
+    df
+
+           cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0      Mandarin    Orri      east          1.0           1.0           23.00   
+    1      Mandarin    Orri      east          1.0           2.0           20.60   
+    2      Mandarin    Orri      east          1.0           3.0           17.20   
+    3      Mandarin    Orri      east          1.0           4.0           22.90   
+    4      Mandarin    Orri      east          1.0           5.0           25.60   
+    ...         ...     ...       ...          ...           ...             ...   
+    27566  Mandarin    Orri  rendzina          5.0           6.0           55.92   
+    27567  Mandarin    Orri  rendzina          5.0           7.0           56.19   
+    27568  Mandarin    Orri  rendzina          5.0           8.0             NaN   
+    27569  Mandarin    Orri  rendzina          5.0           9.0           66.33   
+    27570  Mandarin    Orri  rendzina          5.0          10.0           58.35   
+
+           Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0                    NaN      2021-07-26                    NaN   
+    1                    NaN      2021-07-26                    NaN   
+    2                    NaN      2021-07-26                    NaN   
+    3                    NaN      2021-07-26                    NaN   
+    4                    NaN      2021-07-26                    NaN   
+    ...                  ...             ...                    ...   
+    27566                NaN      2022-12-27                   6.20   
+    27567                NaN      2022-12-27                   7.56   
+    27568                NaN      2022-12-27                    NaN   
+    27569                NaN      2022-12-27                   7.54   
+    27570                NaN      2022-12-27                   5.92   
+
+           absolute_mm_increment  ...  relative_ehu_27_35  monthly_ehu_27_35  \
+    0                        NaN  ...                 NaN                NaN   
+    1                        NaN  ...                 NaN                NaN   
+    2                        NaN  ...                 NaN                NaN   
+    3                        NaN  ...                 NaN                NaN   
+    4                        NaN  ...                 NaN                NaN   
+    ...                      ...  ...                 ...                ...   
+    27566                  39.57  ...                 NaN                NaN   
+    27567                  37.61  ...                 NaN                NaN   
+    27568                    NaN  ...                 NaN                NaN   
+    27569                  40.18  ...                 NaN                NaN   
+    27570                  33.85  ...                 NaN                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    27566                    NaN                   NaN               NaN   
+    27567                    NaN                   NaN               NaN   
+    27568                    NaN                   NaN               NaN   
+    27569                    NaN                   NaN               NaN   
+    27570                    NaN                   NaN               NaN   
+
+          total_relative_radiation(Mj/m2)  total_radiation_per_month  peel_color  \
+    0                                 NaN                        NaN         nan   
+    1                                 NaN                        NaN         nan   
+    2                                 NaN                        NaN         nan   
+    3                                 NaN                        NaN         nan   
+    4                                 NaN                        NaN         nan   
+    ...                               ...                        ...         ...   
+    27566                             NaN                        NaN         nan   
+    27567                             NaN                        NaN         nan   
+    27568                             NaN                        NaN         nan   
+    27569                             NaN                        NaN         nan   
+    27570                             NaN                        NaN         nan   
+
+           coordinates  date_of_year  
+    0              NaN           207  
+    1              NaN           207  
+    2              NaN           207  
+    3              NaN           207  
+    4              NaN           207  
+    ...            ...           ...  
+    27566          NaN           361  
+    27567          NaN           361  
+    27568          NaN           361  
+    27569          NaN           361  
+    27570          NaN           361  
+
+    [27571 rows x 62 columns]
+
+    #validate that there is no negative values in RFGR
+    df['relative_fruit_growth_rate'].min()
+
+    0.0
+
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 27571 entries, 0 to 27570
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         27571 non-null  object        
+     1   variety                          27571 non-null  object        
+     2   block                            27571 non-null  object        
+     3   tree_number                      21367 non-null  float64       
+     4   fruit_number                     21367 non-null  float64       
+     5   fruit_diameter                   26523 non-null  float64       
+     6   Av_fruit_diameter                14464 non-null  float64       
+     7   date_of_measure                  27571 non-null  datetime64[ns]
+     8   relative_mm_increment            23124 non-null  float64       
+     9   absolute_mm_increment            24148 non-null  float64       
+     10  days_increment                   26835 non-null  float64       
+     11  relative_fruit_growth_rate       23094 non-null  float64       
+     12  rootstock                        23060 non-null  object        
+     13  soil_type                        26438 non-null  object        
+     14  country                          27571 non-null  object        
+     15  location                         27571 non-null  object        
+     16  crop_load                        13142 non-null  float64       
+     17  planting_distance_between_rows   23060 non-null  float64       
+     18  planting_distance_within_rows    23060 non-null  float64       
+     19  tree_height                      23060 non-null  float64       
+     20  tree_length                      14685 non-null  float64       
+     21  tree_width                       14685 non-null  float64       
+     22  tree_area                        14685 non-null  float64       
+     23  normalized_crop_load             3657 non-null   float64       
+     24  training_system                  15956 non-null  object        
+     25  row_direction                    24331 non-null  object        
+     26  tree_age                         21163 non-null  float64       
+     27  fertilization_type               1400 non-null   object        
+     28  fertilization_quantity           1400 non-null   float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         27571 non-null  object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       27571 non-null  object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     27571 non-null  object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       27571 non-null  object        
+     60  coordinates                      8925 non-null   object        
+     61  date_of_year                     27571 non-null  int64         
+    dtypes: datetime64[ns](2), float64(44), int64(1), object(15)
+    memory usage: 13.0+ MB
+    None
+
+    #change date of year from southern hemisphere to northen hemisphere timezone
+    import datetime
+
+    def southern_to_northen_timezone(day_of_year,country_value):
+        # Check if the substrings are contained in the other column
+        if "chile" in country_value or "RSA" in country_value:
+            # Convert the day of year to a date object
+            current_date = datetime.date(year=2022, month=1, day=1) + datetime.timedelta(days=day_of_year-1)
+            # Add 180 days to the current date
+            modified_date = current_date + datetime.timedelta(days=183)
+            # Convert the modified date back to the day of year (days after 365 counts from 1)
+            modified_day_of_year = modified_date.timetuple().tm_yday
+            return modified_day_of_year
+        else:
+            return day_of_year
+
+    # Apply the function to the day of year column
+    df['date_of_year'] = df.apply(lambda x: southern_to_northen_timezone(x['date_of_year'], x['country']), axis=1)
+    df
+
+
+        
+
+           cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0      Mandarin    Orri      east          1.0           1.0           23.00   
+    1      Mandarin    Orri      east          1.0           2.0           20.60   
+    2      Mandarin    Orri      east          1.0           3.0           17.20   
+    3      Mandarin    Orri      east          1.0           4.0           22.90   
+    4      Mandarin    Orri      east          1.0           5.0           25.60   
+    ...         ...     ...       ...          ...           ...             ...   
+    27566  Mandarin    Orri  rendzina          5.0           6.0           55.92   
+    27567  Mandarin    Orri  rendzina          5.0           7.0           56.19   
+    27568  Mandarin    Orri  rendzina          5.0           8.0             NaN   
+    27569  Mandarin    Orri  rendzina          5.0           9.0           66.33   
+    27570  Mandarin    Orri  rendzina          5.0          10.0           58.35   
+
+           Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0                    NaN      2021-07-26                    NaN   
+    1                    NaN      2021-07-26                    NaN   
+    2                    NaN      2021-07-26                    NaN   
+    3                    NaN      2021-07-26                    NaN   
+    4                    NaN      2021-07-26                    NaN   
+    ...                  ...             ...                    ...   
+    27566                NaN      2022-12-27                   6.20   
+    27567                NaN      2022-12-27                   7.56   
+    27568                NaN      2022-12-27                    NaN   
+    27569                NaN      2022-12-27                   7.54   
+    27570                NaN      2022-12-27                   5.92   
+
+           absolute_mm_increment  ...  relative_ehu_27_35  monthly_ehu_27_35  \
+    0                        NaN  ...                 NaN                NaN   
+    1                        NaN  ...                 NaN                NaN   
+    2                        NaN  ...                 NaN                NaN   
+    3                        NaN  ...                 NaN                NaN   
+    4                        NaN  ...                 NaN                NaN   
+    ...                      ...  ...                 ...                ...   
+    27566                  39.57  ...                 NaN                NaN   
+    27567                  37.61  ...                 NaN                NaN   
+    27568                    NaN  ...                 NaN                NaN   
+    27569                  40.18  ...                 NaN                NaN   
+    27570                  33.85  ...                 NaN                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    27566                    NaN                   NaN               NaN   
+    27567                    NaN                   NaN               NaN   
+    27568                    NaN                   NaN               NaN   
+    27569                    NaN                   NaN               NaN   
+    27570                    NaN                   NaN               NaN   
+
+          total_relative_radiation(Mj/m2)  total_radiation_per_month  peel_color  \
+    0                                 NaN                        NaN         nan   
+    1                                 NaN                        NaN         nan   
+    2                                 NaN                        NaN         nan   
+    3                                 NaN                        NaN         nan   
+    4                                 NaN                        NaN         nan   
+    ...                               ...                        ...         ...   
+    27566                             NaN                        NaN         nan   
+    27567                             NaN                        NaN         nan   
+    27568                             NaN                        NaN         nan   
+    27569                             NaN                        NaN         nan   
+    27570                             NaN                        NaN         nan   
+
+           coordinates  date_of_year  
+    0              NaN           207  
+    1              NaN           207  
+    2              NaN           207  
+    3              NaN           207  
+    4              NaN           207  
+    ...            ...           ...  
+    27566          NaN           361  
+    27567          NaN           361  
+    27568          NaN           361  
+    27569          NaN           361  
+    27570          NaN           361  
+
+    [27571 rows x 62 columns]
+
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 27571 entries, 0 to 27570
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         27571 non-null  object        
+     1   variety                          27571 non-null  object        
+     2   block                            27571 non-null  object        
+     3   tree_number                      21367 non-null  float64       
+     4   fruit_number                     21367 non-null  float64       
+     5   fruit_diameter                   26523 non-null  float64       
+     6   Av_fruit_diameter                14464 non-null  float64       
+     7   date_of_measure                  27571 non-null  datetime64[ns]
+     8   relative_mm_increment            23124 non-null  float64       
+     9   absolute_mm_increment            24148 non-null  float64       
+     10  days_increment                   26835 non-null  float64       
+     11  relative_fruit_growth_rate       23094 non-null  float64       
+     12  rootstock                        23060 non-null  object        
+     13  soil_type                        26438 non-null  object        
+     14  country                          27571 non-null  object        
+     15  location                         27571 non-null  object        
+     16  crop_load                        13142 non-null  float64       
+     17  planting_distance_between_rows   23060 non-null  float64       
+     18  planting_distance_within_rows    23060 non-null  float64       
+     19  tree_height                      23060 non-null  float64       
+     20  tree_length                      14685 non-null  float64       
+     21  tree_width                       14685 non-null  float64       
+     22  tree_area                        14685 non-null  float64       
+     23  normalized_crop_load             3657 non-null   float64       
+     24  training_system                  15956 non-null  object        
+     25  row_direction                    24331 non-null  object        
+     26  tree_age                         21163 non-null  float64       
+     27  fertilization_type               1400 non-null   object        
+     28  fertilization_quantity           1400 non-null   float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         27571 non-null  object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       27571 non-null  object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     27571 non-null  object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       27571 non-null  object        
+     60  coordinates                      8925 non-null   object        
+     61  date_of_year                     27571 non-null  int64         
+    dtypes: datetime64[ns](2), float64(44), int64(1), object(15)
+    memory usage: 13.0+ MB
+    None
+
+    df.to_csv('mandarin_growth_all_with_doi.csv', index=False)
+
+    #fill with NAN the column relative fruit growth rate
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].fillna(value=np.nan)
+
+relative fruit growth rate of mandarins between 2 consequtive months (mid dec-mid jan, mid jan-mid feb, mid feb-mid march,mid march-mid april will be held manually)
+
+all relative fruit growth rate is from all the available data, we might take off chile database in some samples and random samples
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-1):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+1]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+1]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+    res
+
+                                           lower_outlier  \
+    0  q1_july_aug
+    (181, 227]    0.259643
+    Name: relat...   
+    1  q1_aug_sep
+    (227, 258]    0.224286
+    Name: relati...   
+    2  q1_sep_oct
+    (258, 288]    0.2
+    Name: relative_fr...   
+    3  q1_oct_nov
+    (288, 319]    0.162143
+    Name: relati...   
+    4  q1_nov_dec
+    (319, 349]    0.047143
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_aug
+    (181, 227]    0.362857
+    Name: relat...  
+    1  q3_aug_sep
+    (227, 258]    0.330714
+    Name: relati...  
+    2  q3_sep_oct
+    (258, 288]    0.277143
+    Name: relati...  
+    3  q3_oct_nov
+    (288, 319]    0.268421
+    Name: relati...  
+    4  q3_nov_dec
+    (319, 349]    0.171429
+    Name: relati...  
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april
+    from IPython.display import display
+    dict_ = {"jan":15, "feb":46, "march":74}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-1):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+1]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+1]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+fruit growth rate of mandarins between 2 months
+
+    #calculate the fruit growth rate between 2 months (mid-mid)
+    #early_july-mid_sep,mid_sep-mid_nov,mid_oct-mid_dec
+    #defining the lower and upper outlier
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-2):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+2]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+2]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+    res
+
+                                           lower_outlier  \
+    0  q1_july_sep
+    (181, 258]    0.235649
+    Name: relat...   
+    1  q1_aug_oct
+    (227, 288]    0.209286
+    Name: relati...   
+    2  q1_sep_nov
+    (258, 319]    0.181786
+    Name: relati...   
+    3  q1_oct_dec
+    (288, 349]    0.092857
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_sep
+    (181, 258]    0.345714
+    Name: relat...  
+    1  q3_aug_oct
+    (227, 288]    0.3
+    Name: relative_fr...  
+    2  q3_sep_nov
+    (258, 319]    0.273571
+    Name: relati...  
+    3  q3_oct_dec
+    (288, 349]    0.230769
+    Name: relati...  
+
+calculate the fruit growth rate of mandarins between 3 months
+
+    #calculate the fruit growth rate between 3 months (mid-mid)
+    #early_july-mid_oct,mid_aug-mid_nov,mid_sep-mid_dec
+    #defining the lower and upper outlier
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-3):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+3]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+3]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+    res
+
+                                           lower_outlier  \
+    0  q1_july_oct
+    (181, 288]    0.216786
+    Name: relat...   
+    1  q1_aug_nov
+    (227, 319]    0.187845
+    Name: relati...   
+    2  q1_sep_dec
+    (258, 349]    0.125
+    Name: relative_...   
+
+                                           upper_outlier  
+    0  q3_july_oct
+    (181, 288]    0.324286
+    Name: relat...  
+    1  q3_aug_nov
+    (227, 319]    0.290357
+    Name: relati...  
+    2  q3_sep_dec
+    (258, 349]    0.253571
+    Name: relati...  
+
+calculate the fruit growth rate of mandarins between 4 months
+
+    #calculate the fruit growth rate between 4 months (mid-mid)
+    #early_july-mid_nov,mid_aug-mid_dec
+    #defining the lower and upper outlier
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-4):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+4]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+4]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+    res
+
+                                           lower_outlier  \
+    0  q1_july_nov
+    (181, 319]    0.196786
+    Name: relat...   
+    1  q1_aug_dec
+    (227, 349]    0.143798
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_nov
+    (181, 319]    0.31
+    Name: relative_...  
+    1  q3_aug_dec
+    (227, 349]    0.274821
+    Name: relati...  
+
+    #calculate the fruit growth rate between 5 months (mid-mid)
+    #early_july-mid_dec
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-5):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+5]
+        print(next_key)
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+5]
+        print(next_val)
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+    print(lowe_val)
+    print(upper_val)
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+
+    dec
+    349
+    [q1_july_dec
+    (181, 349]    0.157143
+    Name: relative_fruit_growth_rate, dtype: float64]
+    [q3_july_dec
+    (181, 349]    0.291667
+    Name: relative_fruit_growth_rate, dtype: float64]
+
+    #calculate the fruit growth rate of mandarins between two consequtive months dec-jan
+    #not working need to do manually for dec-jan,jan-feb-feb-march,march-april
+    from IPython.display import display
+    df['q1_dec'] = pd.cut(df['date_of_year'], bins=[349,365])
+    df['q1_jan'] = pd.cut(df['date_of_year'], bins=[0,15])
+    dec_q1_rgr= df.groupby('q1_dec')['relative_fruit_growth_rate'].quantile(0.25)
+    jan_q1_rgr= df.groupby('q1_jan')['relative_fruit_growth_rate'].quantile(0.25)
+    dec_jan_q1_rgr=jan_q1_rgr-dec_q1_rgr
+    df['q3_dec'] = pd.cut(df['date_of_year'], bins=[349,365])
+    df['q3_jan'] = pd.cut(df['date_of_year'], bins=[0,15])
+    dec_q3_rgr= df.groupby('q3_dec')['relative_fruit_growth_rate'].quantile(0.75)
+    jan_q3_rgr= df.groupby('q3_jan')['relative_fruit_growth_rate'].quantile(0.75)
+    dec_jan_q3_rgr=jan_q3_rgr-dec_q3_rgr
+    lower_outlier_dec_jan= dec_jan_q1_rgr-(dec_jan_q3_rgr-dec_jan_q1_rgr)*1
+    upper_outlier_dec_jan= dec_jan_q3_rgr+(dec_jan_q3_rgr-dec_jan_q1_rgr)*1
+    lower_upper_table= pd.DataFrame({'lower_outlier':lower_outlier_dec_jan
+                                     ,'upper_outlier':upper_outlier_dec_jan})
+    display(lower_upper_table)
+
+                lower_outlier  upper_outlier
+    (0, 15]               NaN            NaN
+    (349, 365]            NaN            NaN
+
+    #not so relevant, i changed the coefficients for the outliers
+    #RGR thresholds ear_july-mid_aug (doy 181-227)
+    df['q1_july_aug'] = pd.cut(df['date_of_year'], bins=[181,227])
+    df['q3_july_aug'] = pd.cut(df['date_of_year'], bins=[181,227])
+    july_aug_q1_rgr= df.groupby('q1_july_aug')['relative_fruit_growth_rate'].quantile(0.25)
+    july_aug_q3_rgr= df.groupby('q3_july_aug')['relative_fruit_growth_rate'].quantile(0.75)
+    lower_outlier_july_aug= july_aug_q1_rgr-(july_aug_q3_rgr-july_aug_q1_rgr)*1.5
+    upper_outlier_july_aug= july_aug_q3_rgr+(july_aug_q3_rgr-july_aug_q1_rgr)*1.5
+    #RGR thresholds mid_aug-mid_sep (doy 227-258)
+    df['q1_aug_sep'] = pd.cut(df['date_of_year'], bins=[227,258])
+    df['q3_aug_sep'] = pd.cut(df['date_of_year'], bins=[227,258])
+    aug_sep_q1_rgr= df.groupby('q1_aug_sep')['relative_fruit_growth_rate'].quantile(0.25)
+    aug_sep_q3_rgr= df.groupby('q3_aug_sep')['relative_fruit_growth_rate'].quantile(0.75)
+    lower_outlier_aug_sep= aug_sep_q1_rgr-(aug_sep_q3_rgr-aug_sep_q1_rgr)*1.5
+    upper_outlier_aug_sep= aug_sep_q3_rgr+(aug_sep_q3_rgr-aug_sep_q1_rgr)*1.5
+    lower_upper_table= pd.DataFrame({'lower_outlier':[lower_outlier_july_aug,lower_outlier_aug_sep]
+                                     ,'upper_outlier':[upper_outlier_july_aug,upper_outlier_aug_sep]})
+    lower_upper_table
+
+                                           lower_outlier  \
+    0  q1_july_aug
+    (181, 227]    0.104821
+    Name: relat...   
+    1  q1_aug_sep
+    (227, 258]    0.064643
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_aug
+    (181, 227]    0.517679
+    Name: relat...  
+    1  q3_aug_sep
+    (227, 258]    0.490357
+    Name: relati...  
+
+Navel oranges relative fruit growth rates
+
+    import pandas as pd
+    import numpy as np
+    #pd.reset_option('display.max_rows')
+
+    #upload data
+    df=pd.read_csv('navel_oranges_all.csv')
+    df
+
+         cultivar   variety          block  tree_number  fruit_number  \
+    0      orange  Witkrans             13            1             1   
+    1      orange  Witkrans             13            1             2   
+    2      orange  Witkrans             13            1             3   
+    3      orange  Witkrans             13            1             4   
+    4      orange  Witkrans             13            1             5   
+    ...       ...       ...            ...          ...           ...   
+    9695   orange  new_holl  new_holl_2020            5            21   
+    9696   orange  new_holl  new_holl_2020            5            22   
+    9697   orange  new_holl  new_holl_2020            5            23   
+    9698   orange  new_holl  new_holl_2020            5            24   
+    9699   orange  new_holl  new_holl_2020            5            25   
+
+         fruit_diameter  Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0             38.54            41.0052      2021-12-09                    NaN   
+    1             35.52            41.0052      2021-12-09                    NaN   
+    2             46.24            41.0052      2021-12-09                    NaN   
+    3             45.29            41.0052      2021-12-09                    NaN   
+    4             43.16            41.0052      2021-12-09                    NaN   
+    ...             ...                ...             ...                    ...   
+    9695            NaN                NaN      2020-12-22                    NaN   
+    9696             93                NaN      2020-12-22                    0.0   
+    9697           83.8                NaN      2020-12-22                    0.0   
+    9698             98                NaN      2020-12-22                    1.0   
+    9699            101                NaN      2020-12-22                    0.0   
+
+          absolute_mm_increment  ...  relative_ehu_27_35 monthly_ehu_27_35  \
+    0                       NaN  ...                 NaN               NaN   
+    1                       NaN  ...                 NaN               NaN   
+    2                       NaN  ...                 NaN               NaN   
+    3                       NaN  ...                 NaN               NaN   
+    4                       NaN  ...                 NaN               NaN   
+    ...                     ...  ...                 ...               ...   
+    9695                    NaN  ...                 NaN               NaN   
+    9696                   28.8  ...                 NaN               NaN   
+    9697                   24.3  ...                 NaN               NaN   
+    9698                   33.2  ...                 NaN               NaN   
+    9699                   29.0  ...                 NaN               NaN   
+
+         relative_precipitation monthly_precipitation relative_humidity  \
+    0                       NaN                   NaN               NaN   
+    1                       NaN                   NaN               NaN   
+    2                       NaN                   NaN               NaN   
+    3                       NaN                   NaN               NaN   
+    4                       NaN                   NaN               NaN   
+    ...                     ...                   ...               ...   
+    9695                    NaN                   NaN               NaN   
+    9696                    NaN                   NaN               NaN   
+    9697                    NaN                   NaN               NaN   
+    9698                    NaN                   NaN               NaN   
+    9699                    NaN                   NaN               NaN   
+
+         total_relative_radiation(Mj/m2)  total_radiation_per_month  peel_color  \
+    0                                NaN                        NaN         NaN   
+    1                                NaN                        NaN         NaN   
+    2                                NaN                        NaN         NaN   
+    3                                NaN                        NaN         NaN   
+    4                                NaN                        NaN         NaN   
+    ...                              ...                        ...         ...   
+    9695                             NaN                        NaN         NaN   
+    9696                             NaN                        NaN         NaN   
+    9697                             NaN                        NaN         NaN   
+    9698                             NaN                        NaN         NaN   
+    9699                             NaN                        NaN         NaN   
+
+          longitude  latitude  
+    0           NaN       NaN  
+    1           NaN       NaN  
+    2           NaN       NaN  
+    3           NaN       NaN  
+    4           NaN       NaN  
+    ...         ...       ...  
+    9695        NaN       NaN  
+    9696        NaN       NaN  
+    9697        NaN       NaN  
+    9698        NaN       NaN  
+    9699        NaN       NaN  
+
+    [9700 rows x 62 columns]
+
+    #check types of variable
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 9700 entries, 0 to 9699
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype  
+    ---  ------                           --------------  -----  
+     0   cultivar                         9700 non-null   object 
+     1   variety                          9700 non-null   object 
+     2   block                            9700 non-null   object 
+     3   tree_number                      9700 non-null   int64  
+     4   fruit_number                     9700 non-null   int64  
+     5   fruit_diameter                   9196 non-null   object 
+     6   Av_fruit_diameter                5425 non-null   float64
+     7   date_of_measure                  9700 non-null   object 
+     8   relative_mm_increment            8449 non-null   float64
+     9   absolute_mm_increment            8487 non-null   float64
+     10  days_increment                   9000 non-null   float64
+     11  relative_fruit_growth_rate       8479 non-null   object 
+     12  rootstock                        4275 non-null   object 
+     13  soil_type                        8400 non-null   object 
+     14  country                          8575 non-null   object 
+     15  location                         4275 non-null   object 
+     16  crop_load                        475 non-null    float64
+     17  planting_distance_between_rows   4275 non-null   float64
+     18  planting_distance_within_rows    4275 non-null   float64
+     19  tree_height                      475 non-null    float64
+     20  tree_length                      475 non-null    float64
+     21  tree_width                       475 non-null    float64
+     22  tree_area                        475 non-null    float64
+     23  normalized_crop_load             475 non-null    float64
+     24  training_system                  4275 non-null   object 
+     25  row_direction                    4275 non-null   object 
+     26  tree_age                         0 non-null      float64
+     27  fertilization_type               0 non-null      float64
+     28  fertilization_quantity           0 non-null      float64
+     29  irrigation_regime                0 non-null      float64
+     30  leaf_area_index                  0 non-null      float64
+     31  ndvi                             0 non-null      float64
+     32  humidity                         0 non-null      float64
+     33  water_potential                  0 non-null      float64
+     34  sap_flow                         0 non-null      float64
+     35  hormone_application_type         0 non-null      float64
+     36  hormone_application_quantity     0 non-null      float64
+     37  spray_type                       0 non-null      float64
+     38  spray_quantity                   0 non-null      float64
+     39  orchard_area                     0 non-null      float64
+     40  estimated_date_of_full_bloom     0 non-null      float64
+     41  pruning_type                     0 non-null      float64
+     42  gridling_number                  0 non-null      float64
+     43  relative_heat_sum                0 non-null      float64
+     44  heat_sum_units_march_june        0 non-null      float64
+     45  heat_sum_units_per_month         0 non-null      float64
+     46  total_heat_sum_units             0 non-null      float64
+     47  relative_av_temp                 0 non-null      float64
+     48  av_monthly_temp                  0 non-null      float64
+     49  relative_gdd_13                  0 non-null      float64
+     50  monthly_gdd_13_sum               0 non-null      float64
+     51  accumulates_gdd_13               0 non-null      float64
+     52  relative_ehu_27_35               0 non-null      float64
+     53  monthly_ehu_27_35                0 non-null      float64
+     54  relative_precipitation           0 non-null      float64
+     55  monthly_precipitation            0 non-null      float64
+     56  relative_humidity                0 non-null      float64
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64
+     58  total_radiation_per_month        0 non-null      float64
+     59  peel_color                       0 non-null      float64
+     60  longitude                        0 non-null      float64
+     61  latitude                         0 non-null      float64
+    dtypes: float64(48), int64(2), object(12)
+    memory usage: 4.6+ MB
+    None
+
+    #need to chage data types in some of the variables to float
+    var_to_float= ['fruit_diameter','relative_mm_increment','absolute_mm_increment','relative_fruit_growth_rate',
+                   'irrigation_regime']
+    for i in var_to_float:
+        df[i] = pd.to_numeric(df[i], errors='coerce')
+    df['date_of_measure'] = pd.to_datetime(df['date_of_measure'])
+    df['estimated_date_of_full_bloom'] = pd.to_datetime(df['estimated_date_of_full_bloom'])
+    var_to_object= ['hormone_application_type','spray_type','pruning_type','peel_color']
+    for j in var_to_object:
+        df[j]=df[j].astype(str)
+
+    #check the changes in the variables data type
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 9700 entries, 0 to 9699
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         9700 non-null   object        
+     1   variety                          9700 non-null   object        
+     2   block                            9700 non-null   object        
+     3   tree_number                      9700 non-null   int64         
+     4   fruit_number                     9700 non-null   int64         
+     5   fruit_diameter                   9179 non-null   float64       
+     6   Av_fruit_diameter                5425 non-null   float64       
+     7   date_of_measure                  9700 non-null   datetime64[ns]
+     8   relative_mm_increment            8449 non-null   float64       
+     9   absolute_mm_increment            8487 non-null   float64       
+     10  days_increment                   9000 non-null   float64       
+     11  relative_fruit_growth_rate       8476 non-null   float64       
+     12  rootstock                        4275 non-null   object        
+     13  soil_type                        8400 non-null   object        
+     14  country                          8575 non-null   object        
+     15  location                         4275 non-null   object        
+     16  crop_load                        475 non-null    float64       
+     17  planting_distance_between_rows   4275 non-null   float64       
+     18  planting_distance_within_rows    4275 non-null   float64       
+     19  tree_height                      475 non-null    float64       
+     20  tree_length                      475 non-null    float64       
+     21  tree_width                       475 non-null    float64       
+     22  tree_area                        475 non-null    float64       
+     23  normalized_crop_load             475 non-null    float64       
+     24  training_system                  4275 non-null   object        
+     25  row_direction                    4275 non-null   object        
+     26  tree_age                         0 non-null      float64       
+     27  fertilization_type               0 non-null      float64       
+     28  fertilization_quantity           0 non-null      float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         9700 non-null   object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       9700 non-null   object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     9700 non-null   object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       9700 non-null   object        
+     60  longitude                        0 non-null      float64       
+     61  latitude                         0 non-null      float64       
+    dtypes: datetime64[ns](2), float64(45), int64(2), object(13)
+    memory usage: 4.6+ MB
+    None
+
+    #create new column of date of year in date time format and extract the date
+    df['date_of_year'] = pd.to_datetime(df['date_of_measure'])
+    df['date_of_year'] = df['date_of_year'].dt.dayofyear
+    df
+
+         cultivar   variety          block  tree_number  fruit_number  \
+    0      orange  Witkrans             13            1             1   
+    1      orange  Witkrans             13            1             2   
+    2      orange  Witkrans             13            1             3   
+    3      orange  Witkrans             13            1             4   
+    4      orange  Witkrans             13            1             5   
+    ...       ...       ...            ...          ...           ...   
+    9695   orange  new_holl  new_holl_2020            5            21   
+    9696   orange  new_holl  new_holl_2020            5            22   
+    9697   orange  new_holl  new_holl_2020            5            23   
+    9698   orange  new_holl  new_holl_2020            5            24   
+    9699   orange  new_holl  new_holl_2020            5            25   
+
+          fruit_diameter  Av_fruit_diameter date_of_measure  \
+    0              38.54            41.0052      2021-12-09   
+    1              35.52            41.0052      2021-12-09   
+    2              46.24            41.0052      2021-12-09   
+    3              45.29            41.0052      2021-12-09   
+    4              43.16            41.0052      2021-12-09   
+    ...              ...                ...             ...   
+    9695             NaN                NaN      2020-12-22   
+    9696           93.00                NaN      2020-12-22   
+    9697           83.80                NaN      2020-12-22   
+    9698           98.00                NaN      2020-12-22   
+    9699          101.00                NaN      2020-12-22   
+
+          relative_mm_increment  absolute_mm_increment  ...  monthly_ehu_27_35  \
+    0                       NaN                    NaN  ...                NaN   
+    1                       NaN                    NaN  ...                NaN   
+    2                       NaN                    NaN  ...                NaN   
+    3                       NaN                    NaN  ...                NaN   
+    4                       NaN                    NaN  ...                NaN   
+    ...                     ...                    ...  ...                ...   
+    9695                    NaN                    NaN  ...                NaN   
+    9696                    0.0                   28.8  ...                NaN   
+    9697                    0.0                   24.3  ...                NaN   
+    9698                    1.0                   33.2  ...                NaN   
+    9699                    0.0                   29.0  ...                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    9695                     NaN                   NaN               NaN   
+    9696                     NaN                   NaN               NaN   
+    9697                     NaN                   NaN               NaN   
+    9698                     NaN                   NaN               NaN   
+    9699                     NaN                   NaN               NaN   
+
+         total_relative_radiation(Mj/m2) total_radiation_per_month  peel_color  \
+    0                                NaN                       NaN         nan   
+    1                                NaN                       NaN         nan   
+    2                                NaN                       NaN         nan   
+    3                                NaN                       NaN         nan   
+    4                                NaN                       NaN         nan   
+    ...                              ...                       ...         ...   
+    9695                             NaN                       NaN         nan   
+    9696                             NaN                       NaN         nan   
+    9697                             NaN                       NaN         nan   
+    9698                             NaN                       NaN         nan   
+    9699                             NaN                       NaN         nan   
+
+          longitude  latitude  date_of_year  
+    0           NaN       NaN           343  
+    1           NaN       NaN           343  
+    2           NaN       NaN           343  
+    3           NaN       NaN           343  
+    4           NaN       NaN           343  
+    ...         ...       ...           ...  
+    9695        NaN       NaN           357  
+    9696        NaN       NaN           357  
+    9697        NaN       NaN           357  
+    9698        NaN       NaN           357  
+    9699        NaN       NaN           357  
+
+    [9700 rows x 63 columns]
+
+    #replace negative value in 'relative_mm_increment' column and in 'relative_fruit_growth_rate' column to NAN
+    df['relative_mm_increment'] = df['relative_mm_increment'].where(df['relative_mm_increment'] >= 0, np.nan)
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].where(df['relative_fruit_growth_rate'] >= 0, np.nan)
+    df
+
+         cultivar   variety          block  tree_number  fruit_number  \
+    0      orange  Witkrans             13            1             1   
+    1      orange  Witkrans             13            1             2   
+    2      orange  Witkrans             13            1             3   
+    3      orange  Witkrans             13            1             4   
+    4      orange  Witkrans             13            1             5   
+    ...       ...       ...            ...          ...           ...   
+    9695   orange  new_holl  new_holl_2020            5            21   
+    9696   orange  new_holl  new_holl_2020            5            22   
+    9697   orange  new_holl  new_holl_2020            5            23   
+    9698   orange  new_holl  new_holl_2020            5            24   
+    9699   orange  new_holl  new_holl_2020            5            25   
+
+          fruit_diameter  Av_fruit_diameter date_of_measure  \
+    0              38.54            41.0052      2021-12-09   
+    1              35.52            41.0052      2021-12-09   
+    2              46.24            41.0052      2021-12-09   
+    3              45.29            41.0052      2021-12-09   
+    4              43.16            41.0052      2021-12-09   
+    ...              ...                ...             ...   
+    9695             NaN                NaN      2020-12-22   
+    9696           93.00                NaN      2020-12-22   
+    9697           83.80                NaN      2020-12-22   
+    9698           98.00                NaN      2020-12-22   
+    9699          101.00                NaN      2020-12-22   
+
+          relative_mm_increment  absolute_mm_increment  ...  monthly_ehu_27_35  \
+    0                       NaN                    NaN  ...                NaN   
+    1                       NaN                    NaN  ...                NaN   
+    2                       NaN                    NaN  ...                NaN   
+    3                       NaN                    NaN  ...                NaN   
+    4                       NaN                    NaN  ...                NaN   
+    ...                     ...                    ...  ...                ...   
+    9695                    NaN                    NaN  ...                NaN   
+    9696                    0.0                   28.8  ...                NaN   
+    9697                    0.0                   24.3  ...                NaN   
+    9698                    1.0                   33.2  ...                NaN   
+    9699                    0.0                   29.0  ...                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    9695                     NaN                   NaN               NaN   
+    9696                     NaN                   NaN               NaN   
+    9697                     NaN                   NaN               NaN   
+    9698                     NaN                   NaN               NaN   
+    9699                     NaN                   NaN               NaN   
+
+         total_relative_radiation(Mj/m2) total_radiation_per_month  peel_color  \
+    0                                NaN                       NaN         nan   
+    1                                NaN                       NaN         nan   
+    2                                NaN                       NaN         nan   
+    3                                NaN                       NaN         nan   
+    4                                NaN                       NaN         nan   
+    ...                              ...                       ...         ...   
+    9695                             NaN                       NaN         nan   
+    9696                             NaN                       NaN         nan   
+    9697                             NaN                       NaN         nan   
+    9698                             NaN                       NaN         nan   
+    9699                             NaN                       NaN         nan   
+
+          longitude  latitude  date_of_year  
+    0           NaN       NaN           343  
+    1           NaN       NaN           343  
+    2           NaN       NaN           343  
+    3           NaN       NaN           343  
+    4           NaN       NaN           343  
+    ...         ...       ...           ...  
+    9695        NaN       NaN           357  
+    9696        NaN       NaN           357  
+    9697        NaN       NaN           357  
+    9698        NaN       NaN           357  
+    9699        NaN       NaN           357  
+
+    [9700 rows x 63 columns]
+
+    #validate that there is no negative values in RFGR
+    df['relative_fruit_growth_rate'].min()
+
+    0.0
+
+    #change date of year from float to int
+    #df['date_of_year']=df['date_of_year'].astype(int)
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 9700 entries, 0 to 9699
+    Data columns (total 63 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         9700 non-null   object        
+     1   variety                          9700 non-null   object        
+     2   block                            9700 non-null   object        
+     3   tree_number                      9700 non-null   int64         
+     4   fruit_number                     9700 non-null   int64         
+     5   fruit_diameter                   9179 non-null   float64       
+     6   Av_fruit_diameter                5425 non-null   float64       
+     7   date_of_measure                  9700 non-null   datetime64[ns]
+     8   relative_mm_increment            8336 non-null   float64       
+     9   absolute_mm_increment            8487 non-null   float64       
+     10  days_increment                   9000 non-null   float64       
+     11  relative_fruit_growth_rate       8349 non-null   float64       
+     12  rootstock                        4275 non-null   object        
+     13  soil_type                        8400 non-null   object        
+     14  country                          8575 non-null   object        
+     15  location                         4275 non-null   object        
+     16  crop_load                        475 non-null    float64       
+     17  planting_distance_between_rows   4275 non-null   float64       
+     18  planting_distance_within_rows    4275 non-null   float64       
+     19  tree_height                      475 non-null    float64       
+     20  tree_length                      475 non-null    float64       
+     21  tree_width                       475 non-null    float64       
+     22  tree_area                        475 non-null    float64       
+     23  normalized_crop_load             475 non-null    float64       
+     24  training_system                  4275 non-null   object        
+     25  row_direction                    4275 non-null   object        
+     26  tree_age                         0 non-null      float64       
+     27  fertilization_type               0 non-null      float64       
+     28  fertilization_quantity           0 non-null      float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         9700 non-null   object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       9700 non-null   object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     9700 non-null   object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       9700 non-null   object        
+     60  longitude                        0 non-null      float64       
+     61  latitude                         0 non-null      float64       
+     62  date_of_year                     9700 non-null   int64         
+    dtypes: datetime64[ns](2), float64(45), int64(3), object(13)
+    memory usage: 4.7+ MB
+    None
+
+    #change date of year from southern hemisphere to northen hemisphere timezone
+    import datetime
+
+    def southern_to_northen_timezone(day_of_year,country_value):
+        # Check if the substrings are contained in the other column
+        if "chile" in str(country_value) or "RSA" in str(country_value):
+            # Convert the day of year to a date object
+            current_date = datetime.date(year=2022, month=1, day=1) + datetime.timedelta(days=int(day_of_year)-1)
+            # Add 180 days to the current date
+            modified_date = current_date + datetime.timedelta(days=183)
+            # Convert the modified date back to the day of year (days after 365 counts from 1)
+            modified_day_of_year = modified_date.timetuple().tm_yday
+            return modified_day_of_year
+        else:
+            return day_of_year
+
+    # Apply the function to the day of year column
+    df['date_of_year'] = df.apply(lambda x: southern_to_northen_timezone(x['date_of_year'], x['country']), axis=1)
+    df
+
+         cultivar   variety          block  tree_number  fruit_number  \
+    0      orange  Witkrans             13            1             1   
+    1      orange  Witkrans             13            1             2   
+    2      orange  Witkrans             13            1             3   
+    3      orange  Witkrans             13            1             4   
+    4      orange  Witkrans             13            1             5   
+    ...       ...       ...            ...          ...           ...   
+    9695   orange  new_holl  new_holl_2020            5            21   
+    9696   orange  new_holl  new_holl_2020            5            22   
+    9697   orange  new_holl  new_holl_2020            5            23   
+    9698   orange  new_holl  new_holl_2020            5            24   
+    9699   orange  new_holl  new_holl_2020            5            25   
+
+          fruit_diameter  Av_fruit_diameter date_of_measure  \
+    0              38.54            41.0052      2021-12-09   
+    1              35.52            41.0052      2021-12-09   
+    2              46.24            41.0052      2021-12-09   
+    3              45.29            41.0052      2021-12-09   
+    4              43.16            41.0052      2021-12-09   
+    ...              ...                ...             ...   
+    9695             NaN                NaN      2020-12-22   
+    9696           93.00                NaN      2020-12-22   
+    9697           83.80                NaN      2020-12-22   
+    9698           98.00                NaN      2020-12-22   
+    9699          101.00                NaN      2020-12-22   
+
+          relative_mm_increment  absolute_mm_increment  ...  monthly_ehu_27_35  \
+    0                       NaN                    NaN  ...                NaN   
+    1                       NaN                    NaN  ...                NaN   
+    2                       NaN                    NaN  ...                NaN   
+    3                       NaN                    NaN  ...                NaN   
+    4                       NaN                    NaN  ...                NaN   
+    ...                     ...                    ...  ...                ...   
+    9695                    NaN                    NaN  ...                NaN   
+    9696                    0.0                   28.8  ...                NaN   
+    9697                    0.0                   24.3  ...                NaN   
+    9698                    1.0                   33.2  ...                NaN   
+    9699                    0.0                   29.0  ...                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    9695                     NaN                   NaN               NaN   
+    9696                     NaN                   NaN               NaN   
+    9697                     NaN                   NaN               NaN   
+    9698                     NaN                   NaN               NaN   
+    9699                     NaN                   NaN               NaN   
+
+         total_relative_radiation(Mj/m2) total_radiation_per_month  peel_color  \
+    0                                NaN                       NaN         nan   
+    1                                NaN                       NaN         nan   
+    2                                NaN                       NaN         nan   
+    3                                NaN                       NaN         nan   
+    4                                NaN                       NaN         nan   
+    ...                              ...                       ...         ...   
+    9695                             NaN                       NaN         nan   
+    9696                             NaN                       NaN         nan   
+    9697                             NaN                       NaN         nan   
+    9698                             NaN                       NaN         nan   
+    9699                             NaN                       NaN         nan   
+
+          longitude  latitude  date_of_year  
+    0           NaN       NaN           161  
+    1           NaN       NaN           161  
+    2           NaN       NaN           161  
+    3           NaN       NaN           161  
+    4           NaN       NaN           161  
+    ...         ...       ...           ...  
+    9695        NaN       NaN           357  
+    9696        NaN       NaN           357  
+    9697        NaN       NaN           357  
+    9698        NaN       NaN           357  
+    9699        NaN       NaN           357  
+
+    [9700 rows x 63 columns]
+
+    #df.to_csv('orange_growth_all_with_doi.csv', index=False)
+
+    #fill with NAN the column relative fruit growth rate
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].fillna(value=np.nan)
+
+relative fruit growth rate of navel oranges between consequtive months
+
+    #calculate the fruit growth rate of oranges between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-1):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+1]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+1]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_july_aug
+    (181, 227]    0.184286
+    Name: relat...   
+    1  q1_aug_sep
+    (227, 258]    0.176667
+    Name: relati...   
+    2  q1_sep_oct
+    (258, 288]    0.1375
+    Name: relative...   
+    3  q1_oct_nov
+    (288, 319]    0.080446
+    Name: relati...   
+    4  q1_nov_dec
+    (319, 349]    0.01553
+    Name: relativ...   
+
+                                           upper_outlier  
+    0  q3_july_aug
+    (181, 227]    0.334286
+    Name: relat...  
+    1  q3_aug_sep
+    (227, 258]    0.333333
+    Name: relati...  
+    2  q3_sep_oct
+    (258, 288]    0.222222
+    Name: relati...  
+    3  q3_oct_nov
+    (288, 319]    0.198839
+    Name: relati...  
+    4  q3_nov_dec
+    (319, 349]    0.114679
+    Name: relati...  
+
+relative fruit growth rate of navel oranges between 2 consequtive months
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-2):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+2]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+2]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_july_sep
+    (181, 258]    0.177857
+    Name: relat...   
+    1  q1_aug_oct
+    (227, 288]    0.151786
+    Name: relati...   
+    2  q1_sep_nov
+    (258, 319]    0.116886
+    Name: relati...   
+    3  q1_oct_dec
+    (288, 349]    0.040714
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_sep
+    (181, 258]    0.333333
+    Name: relat...  
+    1  q3_aug_oct
+    (227, 288]    0.278571
+    Name: relati...  
+    2  q3_sep_nov
+    (258, 319]    0.214286
+    Name: relati...  
+    3  q3_oct_dec
+    (288, 349]    0.157895
+    Name: relati...  
+
+relative fruit growth rate of navel oranges between 3 consequtive months
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-3):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+3]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+3]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_july_oct
+    (181, 288]    0.153333
+    Name: relat...   
+    1  q1_aug_nov
+    (227, 319]    0.127143
+    Name: relati...   
+    2  q1_sep_dec
+    (258, 349]    0.0697
+    Name: relative...   
+
+                                           upper_outlier  
+    0  q3_july_oct
+    (181, 288]    0.309464
+    Name: relat...  
+    1  q3_aug_nov
+    (227, 319]    0.26
+    Name: relative_f...  
+    2  q3_sep_dec
+    (258, 349]    0.2
+    Name: relative_fr...  
+
+relative fruit growth rate of navel oranges between 4 consequtive months
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-4):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+4]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+4]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_july_nov
+    (181, 319]    0.13125
+    Name: relati...   
+    1  q1_aug_dec
+    (227, 349]    0.084615
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_july_nov
+    (181, 319]    0.295
+    Name: relative...  
+    1  q3_aug_dec
+    (227, 349]    0.239286
+    Name: relati...  
+
+relative fruit growth rate of navel oranges between 5 consequtive months
+
+    #calculate the fruit growth rate of mandarins between two consequtive months (mid to mid)
+    #(ear_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec,mid_dec-mid_jan,mid_jan-mid_feb,mid_feb-mid_march,mid_march-mid_april)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"july": 181, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 349}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-5):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+5]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+5]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_july_dec
+    (181, 349]    0.0893
+    Name: relativ...   
+
+                                           upper_outlier  
+    0  q3_july_dec
+    (181, 349]    0.283333
+    Name: relat...  
+
+    #rgr after dec will be held manually
+    #dec-march (for each month is the same) lower=0.05386, upper=0.088
+
+Clementine
+
+    import pandas as pd
+    import numpy as np
+    #pd.reset_option('display.max_rows')
+
+    #upload data
+    df=pd.read_csv('clemetine_all_years.csv')
+    df
+
+            cultivar variety     block  tree_number  fruit_number fruit_diameter  \
+    0     Clementine  Novas        17A            1             1          43.67   
+    1     Clementine  Novas        17A            1             2          37.75   
+    2     Clementine  Novas        17A            1             3          35.14   
+    3     Clementine  Novas        17A            1             4          36.12   
+    4     Clementine  Novas        17A            1             5          26.69   
+    ...          ...     ...       ...          ...           ...            ...   
+    5820  Clementine  michal  big_2019            5            16            NaN   
+    5821  Clementine  michal  big_2019            5            17             68   
+    5822  Clementine  michal  big_2019            5            18             70   
+    5823  Clementine  michal  big_2019            5            19             73   
+    5824  Clementine  michal  big_2019            5            20             68   
+
+          Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0               38.4152      2022-01-07                    NaN   
+    1               38.4152      2022-01-07                    NaN   
+    2               38.4152      2022-01-07                    NaN   
+    3               38.4152      2022-01-07                    NaN   
+    4               38.4152      2022-01-07                    NaN   
+    ...                 ...             ...                    ...   
+    5820            67.5000      2019-11-17                    NaN   
+    5821            67.5000      2019-11-17                    1.0   
+    5822            67.5000      2019-11-17                    NaN   
+    5823            67.5000      2019-11-17                    3.0   
+    5824            67.5000      2019-11-17                    NaN   
+
+          absolute_mm_increment  ...  relative_ehu_27_35  monthly_ehu_27_35  \
+    0                       NaN  ...                 NaN                NaN   
+    1                       NaN  ...                 NaN                NaN   
+    2                       NaN  ...                 NaN                NaN   
+    3                       NaN  ...                 NaN                NaN   
+    4                       NaN  ...                 NaN                NaN   
+    ...                     ...  ...                 ...                ...   
+    5820                    NaN  ...                 NaN                NaN   
+    5821                   43.0  ...                 NaN                NaN   
+    5822                   43.0  ...                 NaN                NaN   
+    5823                   50.0  ...                 NaN                NaN   
+    5824                   43.0  ...                 NaN                NaN   
+
+          relative_precipitation monthly_precipitation relative_humidity  \
+    0                        NaN                   NaN               NaN   
+    1                        NaN                   NaN               NaN   
+    2                        NaN                   NaN               NaN   
+    3                        NaN                   NaN               NaN   
+    4                        NaN                   NaN               NaN   
+    ...                      ...                   ...               ...   
+    5820                     NaN                   NaN               NaN   
+    5821                     NaN                   NaN               NaN   
+    5822                     NaN                   NaN               NaN   
+    5823                     NaN                   NaN               NaN   
+    5824                     NaN                   NaN               NaN   
+
+         total_relative_radiation(Mj/m2)  total_radiation_per_month  peel_color  \
+    0                                NaN                        NaN         NaN   
+    1                                NaN                        NaN         NaN   
+    2                                NaN                        NaN         NaN   
+    3                                NaN                        NaN         NaN   
+    4                                NaN                        NaN         NaN   
+    ...                              ...                        ...         ...   
+    5820                             NaN                        NaN         NaN   
+    5821                             NaN                        NaN         NaN   
+    5822                             NaN                        NaN         NaN   
+    5823                             NaN                        NaN         NaN   
+    5824                             NaN                        NaN         NaN   
+
+          longitude  latitude  
+    0           NaN       NaN  
+    1           NaN       NaN  
+    2           NaN       NaN  
+    3           NaN       NaN  
+    4           NaN       NaN  
+    ...         ...       ...  
+    5820        NaN       NaN  
+    5821        NaN       NaN  
+    5822        NaN       NaN  
+    5823        NaN       NaN  
+    5824        NaN       NaN  
+
+    [5825 rows x 62 columns]
+
+    #check types of variable
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 5825 entries, 0 to 5824
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype  
+    ---  ------                           --------------  -----  
+     0   cultivar                         5825 non-null   object 
+     1   variety                          5825 non-null   object 
+     2   block                            5825 non-null   object 
+     3   tree_number                      5825 non-null   int64  
+     4   fruit_number                     5825 non-null   int64  
+     5   fruit_diameter                   5646 non-null   object 
+     6   Av_fruit_diameter                5824 non-null   float64
+     7   date_of_measure                  5825 non-null   object 
+     8   relative_mm_increment            4952 non-null   float64
+     9   absolute_mm_increment            5022 non-null   float64
+     10  days_increment                   5200 non-null   float64
+     11  relative_fruit_growth_rate       4951 non-null   float64
+     12  rootstock                        0 non-null      float64
+     13  soil_type                        4825 non-null   object 
+     14  country                          5825 non-null   object 
+     15  location                         4825 non-null   object 
+     16  crop_load                        1475 non-null   float64
+     17  planting_distance_between_rows   3700 non-null   float64
+     18  planting_distance_within_rows    3700 non-null   float64
+     19  tree_height                      2575 non-null   float64
+     20  tree_length                      2575 non-null   float64
+     21  tree_width                       2575 non-null   float64
+     22  tree_area                        2575 non-null   float64
+     23  normalized_crop_load             1475 non-null   float64
+     24  training_system                  2575 non-null   object 
+     25  row_direction                    2575 non-null   object 
+     26  tree_age                         1125 non-null   float64
+     27  fertilization_type               0 non-null      float64
+     28  fertilization_quantity           0 non-null      float64
+     29  irrigation_regime                0 non-null      float64
+     30  leaf_area_index                  0 non-null      float64
+     31  ndvi                             0 non-null      float64
+     32  humidity                         0 non-null      float64
+     33  water_potential                  0 non-null      float64
+     34  sap_flow                         0 non-null      float64
+     35  hormone_application_type         0 non-null      float64
+     36  hormone_application_quantity     0 non-null      float64
+     37  spray_type                       0 non-null      float64
+     38  spray_quantity                   0 non-null      float64
+     39  orchard_area                     0 non-null      float64
+     40  estimated_date_of_full_bloom     0 non-null      float64
+     41  pruning_type                     0 non-null      float64
+     42  gridling_number                  0 non-null      float64
+     43  relative_heat_sum                0 non-null      float64
+     44  heat_sum_units_march_june        0 non-null      float64
+     45  heat_sum_units_per_month         0 non-null      float64
+     46  total_heat_sum_units             0 non-null      float64
+     47  relative_av_temp                 0 non-null      float64
+     48  av_monthly_temp                  0 non-null      float64
+     49  relative_gdd_13                  0 non-null      float64
+     50  monthly_gdd_13_sum               0 non-null      float64
+     51  accumulates_gdd_13               0 non-null      float64
+     52  relative_ehu_27_35               0 non-null      float64
+     53  monthly_ehu_27_35                0 non-null      float64
+     54  relative_precipitation           0 non-null      float64
+     55  monthly_precipitation            0 non-null      float64
+     56  relative_humidity                0 non-null      float64
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64
+     58  total_radiation_per_month        0 non-null      float64
+     59  peel_color                       0 non-null      float64
+     60  longitude                        0 non-null      float64
+     61  latitude                         0 non-null      float64
+    dtypes: float64(50), int64(2), object(10)
+    memory usage: 2.8+ MB
+    None
+
+    #need to chage data types in some of the variables to float
+    var_to_float= ['fruit_diameter','relative_mm_increment','absolute_mm_increment','relative_fruit_growth_rate',
+                   'irrigation_regime']
+    for i in var_to_float:
+        df[i] = pd.to_numeric(df[i], errors='coerce')
+    df['date_of_measure'] = pd.to_datetime(df['date_of_measure'])
+    df['estimated_date_of_full_bloom'] = pd.to_datetime(df['estimated_date_of_full_bloom'])
+    var_to_object= ['hormone_application_type','spray_type','pruning_type','peel_color']
+    for j in var_to_object:
+        df[j]=df[j].astype(str)
+
+    #check the changes in the variables data type
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 5825 entries, 0 to 5824
+    Data columns (total 62 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         5825 non-null   object        
+     1   variety                          5825 non-null   object        
+     2   block                            5825 non-null   object        
+     3   tree_number                      5825 non-null   int64         
+     4   fruit_number                     5825 non-null   int64         
+     5   fruit_diameter                   5642 non-null   float64       
+     6   Av_fruit_diameter                5824 non-null   float64       
+     7   date_of_measure                  5825 non-null   datetime64[ns]
+     8   relative_mm_increment            4952 non-null   float64       
+     9   absolute_mm_increment            5022 non-null   float64       
+     10  days_increment                   5200 non-null   float64       
+     11  relative_fruit_growth_rate       4951 non-null   float64       
+     12  rootstock                        0 non-null      float64       
+     13  soil_type                        4825 non-null   object        
+     14  country                          5825 non-null   object        
+     15  location                         4825 non-null   object        
+     16  crop_load                        1475 non-null   float64       
+     17  planting_distance_between_rows   3700 non-null   float64       
+     18  planting_distance_within_rows    3700 non-null   float64       
+     19  tree_height                      2575 non-null   float64       
+     20  tree_length                      2575 non-null   float64       
+     21  tree_width                       2575 non-null   float64       
+     22  tree_area                        2575 non-null   float64       
+     23  normalized_crop_load             1475 non-null   float64       
+     24  training_system                  2575 non-null   object        
+     25  row_direction                    2575 non-null   object        
+     26  tree_age                         1125 non-null   float64       
+     27  fertilization_type               0 non-null      float64       
+     28  fertilization_quantity           0 non-null      float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         5825 non-null   object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       5825 non-null   object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     5825 non-null   object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       5825 non-null   object        
+     60  longitude                        0 non-null      float64       
+     61  latitude                         0 non-null      float64       
+    dtypes: datetime64[ns](2), float64(46), int64(2), object(12)
+    memory usage: 2.8+ MB
+    None
+
+    #create new column of date of year in date time format and extract the date
+    df['date_of_year'] = pd.to_datetime(df['date_of_measure'])
+    df['date_of_year'] = df['date_of_year'].dt.dayofyear
+    df
+
+            cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0     Clementine  Novas        17A            1             1           43.67   
+    1     Clementine  Novas        17A            1             2           37.75   
+    2     Clementine  Novas        17A            1             3           35.14   
+    3     Clementine  Novas        17A            1             4           36.12   
+    4     Clementine  Novas        17A            1             5           26.69   
+    ...          ...     ...       ...          ...           ...             ...   
+    5820  Clementine  michal  big_2019            5            16             NaN   
+    5821  Clementine  michal  big_2019            5            17           68.00   
+    5822  Clementine  michal  big_2019            5            18           70.00   
+    5823  Clementine  michal  big_2019            5            19           73.00   
+    5824  Clementine  michal  big_2019            5            20           68.00   
+
+          Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0               38.4152      2022-01-07                    NaN   
+    1               38.4152      2022-01-07                    NaN   
+    2               38.4152      2022-01-07                    NaN   
+    3               38.4152      2022-01-07                    NaN   
+    4               38.4152      2022-01-07                    NaN   
+    ...                 ...             ...                    ...   
+    5820            67.5000      2019-11-17                    NaN   
+    5821            67.5000      2019-11-17                    1.0   
+    5822            67.5000      2019-11-17                    NaN   
+    5823            67.5000      2019-11-17                    3.0   
+    5824            67.5000      2019-11-17                    NaN   
+
+          absolute_mm_increment  ...  monthly_ehu_27_35  relative_precipitation  \
+    0                       NaN  ...                NaN                     NaN   
+    1                       NaN  ...                NaN                     NaN   
+    2                       NaN  ...                NaN                     NaN   
+    3                       NaN  ...                NaN                     NaN   
+    4                       NaN  ...                NaN                     NaN   
+    ...                     ...  ...                ...                     ...   
+    5820                    NaN  ...                NaN                     NaN   
+    5821                   43.0  ...                NaN                     NaN   
+    5822                   43.0  ...                NaN                     NaN   
+    5823                   50.0  ...                NaN                     NaN   
+    5824                   43.0  ...                NaN                     NaN   
+
+          monthly_precipitation relative_humidity total_relative_radiation(Mj/m2)  \
+    0                       NaN               NaN                             NaN   
+    1                       NaN               NaN                             NaN   
+    2                       NaN               NaN                             NaN   
+    3                       NaN               NaN                             NaN   
+    4                       NaN               NaN                             NaN   
+    ...                     ...               ...                             ...   
+    5820                    NaN               NaN                             NaN   
+    5821                    NaN               NaN                             NaN   
+    5822                    NaN               NaN                             NaN   
+    5823                    NaN               NaN                             NaN   
+    5824                    NaN               NaN                             NaN   
+
+         total_radiation_per_month  peel_color  longitude  latitude  date_of_year  
+    0                          NaN         nan        NaN       NaN             7  
+    1                          NaN         nan        NaN       NaN             7  
+    2                          NaN         nan        NaN       NaN             7  
+    3                          NaN         nan        NaN       NaN             7  
+    4                          NaN         nan        NaN       NaN             7  
+    ...                        ...         ...        ...       ...           ...  
+    5820                       NaN         nan        NaN       NaN           321  
+    5821                       NaN         nan        NaN       NaN           321  
+    5822                       NaN         nan        NaN       NaN           321  
+    5823                       NaN         nan        NaN       NaN           321  
+    5824                       NaN         nan        NaN       NaN           321  
+
+    [5825 rows x 63 columns]
+
+    #replace negative value in 'relative_mm_increment' column and in 'relative_fruit_growth_rate' column to NAN
+    df['relative_mm_increment'] = df['relative_mm_increment'].where(df['relative_mm_increment'] >= 0, np.nan)
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].where(df['relative_fruit_growth_rate'] >= 0, np.nan)
+    df
+
+            cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0     Clementine  Novas        17A            1             1           43.67   
+    1     Clementine  Novas        17A            1             2           37.75   
+    2     Clementine  Novas        17A            1             3           35.14   
+    3     Clementine  Novas        17A            1             4           36.12   
+    4     Clementine  Novas        17A            1             5           26.69   
+    ...          ...     ...       ...          ...           ...             ...   
+    5820  Clementine  michal  big_2019            5            16             NaN   
+    5821  Clementine  michal  big_2019            5            17           68.00   
+    5822  Clementine  michal  big_2019            5            18           70.00   
+    5823  Clementine  michal  big_2019            5            19           73.00   
+    5824  Clementine  michal  big_2019            5            20           68.00   
+
+          Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0               38.4152      2022-01-07                    NaN   
+    1               38.4152      2022-01-07                    NaN   
+    2               38.4152      2022-01-07                    NaN   
+    3               38.4152      2022-01-07                    NaN   
+    4               38.4152      2022-01-07                    NaN   
+    ...                 ...             ...                    ...   
+    5820            67.5000      2019-11-17                    NaN   
+    5821            67.5000      2019-11-17                    1.0   
+    5822            67.5000      2019-11-17                    NaN   
+    5823            67.5000      2019-11-17                    3.0   
+    5824            67.5000      2019-11-17                    NaN   
+
+          absolute_mm_increment  ...  monthly_ehu_27_35  relative_precipitation  \
+    0                       NaN  ...                NaN                     NaN   
+    1                       NaN  ...                NaN                     NaN   
+    2                       NaN  ...                NaN                     NaN   
+    3                       NaN  ...                NaN                     NaN   
+    4                       NaN  ...                NaN                     NaN   
+    ...                     ...  ...                ...                     ...   
+    5820                    NaN  ...                NaN                     NaN   
+    5821                   43.0  ...                NaN                     NaN   
+    5822                   43.0  ...                NaN                     NaN   
+    5823                   50.0  ...                NaN                     NaN   
+    5824                   43.0  ...                NaN                     NaN   
+
+          monthly_precipitation relative_humidity total_relative_radiation(Mj/m2)  \
+    0                       NaN               NaN                             NaN   
+    1                       NaN               NaN                             NaN   
+    2                       NaN               NaN                             NaN   
+    3                       NaN               NaN                             NaN   
+    4                       NaN               NaN                             NaN   
+    ...                     ...               ...                             ...   
+    5820                    NaN               NaN                             NaN   
+    5821                    NaN               NaN                             NaN   
+    5822                    NaN               NaN                             NaN   
+    5823                    NaN               NaN                             NaN   
+    5824                    NaN               NaN                             NaN   
+
+         total_radiation_per_month  peel_color  longitude  latitude  date_of_year  
+    0                          NaN         nan        NaN       NaN             7  
+    1                          NaN         nan        NaN       NaN             7  
+    2                          NaN         nan        NaN       NaN             7  
+    3                          NaN         nan        NaN       NaN             7  
+    4                          NaN         nan        NaN       NaN             7  
+    ...                        ...         ...        ...       ...           ...  
+    5820                       NaN         nan        NaN       NaN           321  
+    5821                       NaN         nan        NaN       NaN           321  
+    5822                       NaN         nan        NaN       NaN           321  
+    5823                       NaN         nan        NaN       NaN           321  
+    5824                       NaN         nan        NaN       NaN           321  
+
+    [5825 rows x 63 columns]
+
+    #validate that there is no negative values in RFGR
+    df['relative_fruit_growth_rate'].min()
+
+    0.0
+
+    #change date of year from float to int
+    df['date_of_year']=df['date_of_year'].astype(int)
+    print(df.info())
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 5825 entries, 0 to 5824
+    Data columns (total 63 columns):
+     #   Column                           Non-Null Count  Dtype         
+    ---  ------                           --------------  -----         
+     0   cultivar                         5825 non-null   object        
+     1   variety                          5825 non-null   object        
+     2   block                            5825 non-null   object        
+     3   tree_number                      5825 non-null   int64         
+     4   fruit_number                     5825 non-null   int64         
+     5   fruit_diameter                   5642 non-null   float64       
+     6   Av_fruit_diameter                5824 non-null   float64       
+     7   date_of_measure                  5825 non-null   datetime64[ns]
+     8   relative_mm_increment            4936 non-null   float64       
+     9   absolute_mm_increment            5022 non-null   float64       
+     10  days_increment                   5200 non-null   float64       
+     11  relative_fruit_growth_rate       4935 non-null   float64       
+     12  rootstock                        0 non-null      float64       
+     13  soil_type                        4825 non-null   object        
+     14  country                          5825 non-null   object        
+     15  location                         4825 non-null   object        
+     16  crop_load                        1475 non-null   float64       
+     17  planting_distance_between_rows   3700 non-null   float64       
+     18  planting_distance_within_rows    3700 non-null   float64       
+     19  tree_height                      2575 non-null   float64       
+     20  tree_length                      2575 non-null   float64       
+     21  tree_width                       2575 non-null   float64       
+     22  tree_area                        2575 non-null   float64       
+     23  normalized_crop_load             1475 non-null   float64       
+     24  training_system                  2575 non-null   object        
+     25  row_direction                    2575 non-null   object        
+     26  tree_age                         1125 non-null   float64       
+     27  fertilization_type               0 non-null      float64       
+     28  fertilization_quantity           0 non-null      float64       
+     29  irrigation_regime                0 non-null      float64       
+     30  leaf_area_index                  0 non-null      float64       
+     31  ndvi                             0 non-null      float64       
+     32  humidity                         0 non-null      float64       
+     33  water_potential                  0 non-null      float64       
+     34  sap_flow                         0 non-null      float64       
+     35  hormone_application_type         5825 non-null   object        
+     36  hormone_application_quantity     0 non-null      float64       
+     37  spray_type                       5825 non-null   object        
+     38  spray_quantity                   0 non-null      float64       
+     39  orchard_area                     0 non-null      float64       
+     40  estimated_date_of_full_bloom     0 non-null      datetime64[ns]
+     41  pruning_type                     5825 non-null   object        
+     42  gridling_number                  0 non-null      float64       
+     43  relative_heat_sum                0 non-null      float64       
+     44  heat_sum_units_march_june        0 non-null      float64       
+     45  heat_sum_units_per_month         0 non-null      float64       
+     46  total_heat_sum_units             0 non-null      float64       
+     47  relative_av_temp                 0 non-null      float64       
+     48  av_monthly_temp                  0 non-null      float64       
+     49  relative_gdd_13                  0 non-null      float64       
+     50  monthly_gdd_13_sum               0 non-null      float64       
+     51  accumulates_gdd_13               0 non-null      float64       
+     52  relative_ehu_27_35               0 non-null      float64       
+     53  monthly_ehu_27_35                0 non-null      float64       
+     54  relative_precipitation           0 non-null      float64       
+     55  monthly_precipitation            0 non-null      float64       
+     56  relative_humidity                0 non-null      float64       
+     57  total_relative_radiation(Mj/m2)  0 non-null      float64       
+     58  total_radiation_per_month        0 non-null      float64       
+     59  peel_color                       5825 non-null   object        
+     60  longitude                        0 non-null      float64       
+     61  latitude                         0 non-null      float64       
+     62  date_of_year                     5825 non-null   int64         
+    dtypes: datetime64[ns](2), float64(46), int64(3), object(12)
+    memory usage: 2.8+ MB
+    None
+
+    #change date of year from southern hemisphere to northen hemisphere timezone
+    import datetime
+
+    def southern_to_northen_timezone(day_of_year,country_value):
+        # Check if the substrings are contained in the other column
+        if "chile" in str(country_value) or "RSA" in str(country_value):
+            # Convert the day of year to a date object
+            current_date = datetime.date(year=2022, month=1, day=1) + datetime.timedelta(days=int(day_of_year)-1)
+            # Add 180 days to the current date
+            modified_date = current_date + datetime.timedelta(days=183)
+            # Convert the modified date back to the day of year (days after 365 counts from 1)
+            modified_day_of_year = modified_date.timetuple().tm_yday
+            return modified_day_of_year
+        else:
+            return day_of_year
+
+    # Apply the function to the day of year column
+    df['date_of_year'] = df.apply(lambda x: southern_to_northen_timezone(x['date_of_year'], x['country']), axis=1)
+    df
+
+            cultivar variety     block  tree_number  fruit_number  fruit_diameter  \
+    0     Clementine  Novas        17A            1             1           43.67   
+    1     Clementine  Novas        17A            1             2           37.75   
+    2     Clementine  Novas        17A            1             3           35.14   
+    3     Clementine  Novas        17A            1             4           36.12   
+    4     Clementine  Novas        17A            1             5           26.69   
+    ...          ...     ...       ...          ...           ...             ...   
+    5820  Clementine  michal  big_2019            5            16             NaN   
+    5821  Clementine  michal  big_2019            5            17           68.00   
+    5822  Clementine  michal  big_2019            5            18           70.00   
+    5823  Clementine  michal  big_2019            5            19           73.00   
+    5824  Clementine  michal  big_2019            5            20           68.00   
+
+          Av_fruit_diameter date_of_measure  relative_mm_increment  \
+    0               38.4152      2022-01-07                    NaN   
+    1               38.4152      2022-01-07                    NaN   
+    2               38.4152      2022-01-07                    NaN   
+    3               38.4152      2022-01-07                    NaN   
+    4               38.4152      2022-01-07                    NaN   
+    ...                 ...             ...                    ...   
+    5820            67.5000      2019-11-17                    NaN   
+    5821            67.5000      2019-11-17                    1.0   
+    5822            67.5000      2019-11-17                    NaN   
+    5823            67.5000      2019-11-17                    3.0   
+    5824            67.5000      2019-11-17                    NaN   
+
+          absolute_mm_increment  ...  monthly_ehu_27_35  relative_precipitation  \
+    0                       NaN  ...                NaN                     NaN   
+    1                       NaN  ...                NaN                     NaN   
+    2                       NaN  ...                NaN                     NaN   
+    3                       NaN  ...                NaN                     NaN   
+    4                       NaN  ...                NaN                     NaN   
+    ...                     ...  ...                ...                     ...   
+    5820                    NaN  ...                NaN                     NaN   
+    5821                   43.0  ...                NaN                     NaN   
+    5822                   43.0  ...                NaN                     NaN   
+    5823                   50.0  ...                NaN                     NaN   
+    5824                   43.0  ...                NaN                     NaN   
+
+          monthly_precipitation relative_humidity total_relative_radiation(Mj/m2)  \
+    0                       NaN               NaN                             NaN   
+    1                       NaN               NaN                             NaN   
+    2                       NaN               NaN                             NaN   
+    3                       NaN               NaN                             NaN   
+    4                       NaN               NaN                             NaN   
+    ...                     ...               ...                             ...   
+    5820                    NaN               NaN                             NaN   
+    5821                    NaN               NaN                             NaN   
+    5822                    NaN               NaN                             NaN   
+    5823                    NaN               NaN                             NaN   
+    5824                    NaN               NaN                             NaN   
+
+         total_radiation_per_month  peel_color  longitude  latitude  date_of_year  
+    0                          NaN         nan        NaN       NaN           190  
+    1                          NaN         nan        NaN       NaN           190  
+    2                          NaN         nan        NaN       NaN           190  
+    3                          NaN         nan        NaN       NaN           190  
+    4                          NaN         nan        NaN       NaN           190  
+    ...                        ...         ...        ...       ...           ...  
+    5820                       NaN         nan        NaN       NaN           321  
+    5821                       NaN         nan        NaN       NaN           321  
+    5822                       NaN         nan        NaN       NaN           321  
+    5823                       NaN         nan        NaN       NaN           321  
+    5824                       NaN         nan        NaN       NaN           321  
+
+    [5825 rows x 63 columns]
+
+    #df.to_csv('clementine_growth_all_with_doi.csv', index=False)
+
+    #fill with NAN the column relative fruit growth rate
+    df['relative_fruit_growth_rate'] = df['relative_fruit_growth_rate'].fillna(value=np.nan)
+
+relative fruit growth rate of clementines between consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-1):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+1]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+1]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_july
+    (166, 196]    0.168571
+    Name: rela...   
+    1  q1_july_aug
+    (196, 227]    0.257857
+    Name: relat...   
+    2  q1_aug_sep
+    (227, 258]    0.189018
+    Name: relati...   
+    3  q1_sep_oct
+    (258, 288]    0.195357
+    Name: relati...   
+    4  q1_oct_nov
+    (288, 319]    0.168953
+    Name: relati...   
+    5  q1_nov_dec
+    (319, 345]    0.078333
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_june_july
+    (166, 196]    0.545455
+    Name: rela...  
+    1  q3_july_aug
+    (196, 227]    0.357143
+    Name: relat...  
+    2  q3_aug_sep
+    (227, 258]    0.281899
+    Name: relati...  
+    3  q3_sep_oct
+    (258, 288]    0.264286
+    Name: relati...  
+    4  q3_oct_nov
+    (288, 319]    0.280714
+    Name: relati...  
+    5  q3_nov_dec
+    (319, 345]    0.226875
+    Name: relati...  
+
+relative fruit growth rate of clementines between 2 consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-2):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+2]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+2]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_aug
+    (166, 227]    0.256295
+    Name: relat...   
+    1  q1_july_sep
+    (196, 258]    0.213636
+    Name: relat...   
+    2  q1_aug_oct
+    (227, 288]    0.193022
+    Name: relati...   
+    3  q1_sep_nov
+    (258, 319]    0.188571
+    Name: relati...   
+    4  q1_oct_dec
+    (288, 345]    0.12
+    Name: relative_f...   
+
+                                           upper_outlier  
+    0  q3_june_aug
+    (166, 227]    0.363636
+    Name: relat...  
+    1  q3_july_sep
+    (196, 258]    0.320714
+    Name: relat...  
+    2  q3_aug_oct
+    (227, 288]    0.274732
+    Name: relati...  
+    3  q3_sep_nov
+    (258, 319]    0.273144
+    Name: relati...  
+    4  q3_oct_dec
+    (288, 345]    0.267143
+    Name: relati...  
+
+relative fruit growth rate of clementines between 3 consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-3):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+3]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+3]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_sep
+    (166, 258]    0.212976
+    Name: relat...   
+    1  q1_july_oct
+    (196, 288]    0.204286
+    Name: relat...   
+    2  q1_aug_nov
+    (227, 319]    0.188571
+    Name: relati...   
+    3  q1_sep_dec
+    (258, 345]    0.173214
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_june_sep
+    (166, 258]    0.332143
+    Name: relat...  
+    1  q3_july_oct
+    (196, 288]    0.3025
+    Name: relativ...  
+    2  q3_aug_nov
+    (227, 319]    0.276488
+    Name: relati...  
+    3  q3_sep_dec
+    (258, 345]    0.265714
+    Name: relati...  
+
+relative fruit growth rate of clementines between 4 consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-4):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+4]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+4]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_oct
+    (166, 288]    0.203393
+    Name: relat...   
+    1  q1_july_nov
+    (196, 319]    0.199286
+    Name: relat...   
+    2  q1_aug_dec
+    (227, 345]    0.176512
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_june_oct
+    (166, 288]    0.307857
+    Name: relat...  
+    1  q3_july_nov
+    (196, 319]    0.295
+    Name: relative...  
+    2  q3_aug_dec
+    (227, 345]    0.272857
+    Name: relati...  
+
+relative fruit growth rate of clementines between 5 consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-5):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+5]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+5]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_nov
+    (166, 319]    0.198661
+    Name: relat...   
+    1  q1_july_dec
+    (196, 345]    0.18931
+    Name: relati...   
+
+                                           upper_outlier  
+    0  q3_june_nov
+    (166, 319]    0.3
+    Name: relative_f...  
+    1  q3_july_dec
+    (196, 345]    0.293512
+    Name: relat...  
+
+relative fruit growth rate of clementines between 6 consequtive months
+
+    #calculate the fruit growth rate of clementines between two consequtive months (mid to mid)
+    #(mid_june-mid_july,mid_july-mid_aug,mid_aug-mid_sep,mid_sep-mid_oct,mid_oct-mid_nov,mid_nov-mid_dec)
+    #defining the lower and upper outlier
+    from IPython.display import display
+    dict_ = {"june":166,"july": 196, "aug": 227, "sep": 258,"oct": 288,"nov": 319,"dec": 345}
+    lowe_val = []
+    upper_val = []
+    for i in range(len(dict_.keys())-6):
+        cur_key = list(dict_.keys())[i]
+        next_key = list(dict_.keys())[i+6]
+        cur_val = list(dict_.values())[i]
+        next_val = list(dict_.values())[i+6]
+        df[f'q1_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        df[f'q3_{cur_key}_{next_key}'] = pd.cut(df['date_of_year'], bins=[cur_val, next_val])
+        q1_rgr= df.groupby(f'q1_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.25)
+        q3_rgr= df.groupby(f'q3_{cur_key}_{next_key}')['relative_fruit_growth_rate'].quantile(0.75)
+        lower_outlier= q1_rgr
+        upper_outlier= q3_rgr
+        lowe_val.append(lower_outlier)
+        upper_val.append(upper_outlier)
+        
+    res= pd.DataFrame({'lower_outlier':lowe_val,
+                      'upper_outlier':upper_val})
+    display(res)
+    #lower upper values changed using quantiles, since it increase/decrease too much the thresholds
+
+                                           lower_outlier  \
+    0  q1_june_dec
+    (166, 345]    0.189286
+    Name: relat...   
+
+                                           upper_outlier  
+    0  q3_june_dec
+    (166, 345]    0.295
+    Name: relative...  
